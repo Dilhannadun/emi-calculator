@@ -14,7 +14,19 @@
 }
 
 .sub-title {
+  font-size: medium;
+}
+
+.totDp {
   font-size: small;
+  text-decoration: underline;
+  padding: 5px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
 .slider {

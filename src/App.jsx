@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { tenureData } from "./utils/tenureData";
+import { numberWithCommas } from "./utils/functions";
+import { TextInput } from "./components/text-input";
+import { SliderInput } from "./components/slider-input";
 
 function App() {
   const [cost, setCost] = useState(0);
@@ -59,81 +62,76 @@ function App() {
     setDownPayment(dp);
   };
 
+  const totDownPayment = () => {
+    return numberWithCommas(
+      (Number(downPayment) + (cost - downPayment) * (fee / 100)).toFixed(0)
+    );
+  };
+
+  const totLoanAmount = () => {
+    return numberWithCommas((emi * tenure).toFixed(0));
+  };
   return (
     <div className="App">
       <span className="title">EMI Calculator</span>
-      <span className="sub-title">Total Cost of Asset</span>
-      <input
-        type="number"
-        value={cost}
-        onChange={(e) => setCost(e.target.value)}
-        placeholder="Total cost of Assets"
+
+      <TextInput
+        title="Total Cost of Asset"
+        inputType="number"
+        state={cost}
+        setState={setCost}
       />
 
-      <span className="sub-title">Interest Rate (%)</span>
-      <input
-        type="number"
-        value={interest}
-        onChange={(e) => setInterest(e.target.value)}
-        placeholder="Interest Rate (%)"
+      <TextInput
+        title="Interest Rate (%)"
+        inputType="number"
+        state={interest}
+        setState={setInterest}
       />
 
-      <span className="sub-title">Processing Fee (%)</span>
-      <input
-        type="number"
-        value={fee}
-        onChange={(e) => setFee(e.target.value)}
-        placeholder="Processing Fee (%)"
+      <TextInput
+        title="Processing Fee (%)"
+        inputType="number"
+        state={fee}
+        setState={setFee}
       />
 
-      <span className="sub-title">Down Payment</span>
-      <div>
-        <input
-          type="range"
-          value={downPayment}
-          onChange={updateEMI}
-          min={0}
-          max={cost}
-          className="slider"
-        />
-        <div className="lables">
-          <label>0%</label>
-          <b>{downPayment}</b>
-          <label>100%</label>
+      <SliderInput
+        title="Down Payment"
+        underlinedTitle={`Total Down Payment : ${totDownPayment()}`}
+        state={downPayment}
+        setState={updateEMI}
+        minValue={0}
+        maxValue={cost}
+        labelMin={`0%`}
+        labelMax={`100%`}
+      />
+
+      <SliderInput
+        title="Loan Per Month"
+        underlinedTitle={`Total Loan Amount : ${totLoanAmount()}`}
+        state={emi}
+        setState={updateDownPayment}
+        minValue={calcEmi(cost)}
+        maxValue={calcEmi(0)}
+      />
+
+      <div className="form-field">
+        <span className="sub-title">Tenure</span>
+        <div className="tenure-container">
+          {tenureData.map((t) => {
+            return (
+              <button
+                className={`tenure-button ${
+                  t === tenure ? "tenureSelected" : ""
+                }`}
+                onClick={() => setTenure(t)}
+              >
+                {t}
+              </button>
+            );
+          })}
         </div>
-      </div>
-
-      <span className="sub-title">Loan Per Month</span>
-      <div>
-        <input
-          type="range"
-          value={emi}
-          onChange={updateDownPayment}
-          min={calcEmi(cost)}
-          max={calcEmi(0)}
-          className="slider"
-        />
-        <div className="lables">
-          <label>{calcEmi(cost)}</label>
-          <b>{emi}</b>
-          <label>{calcEmi(0)}</label>
-        </div>
-      </div>
-
-      <span className="sub-title">Tenure</span>
-      <div className="tenure-container">
-        {tenureData.map((t) => {
-          return (
-            <button
-              className={`tenure-button ${
-                t === tenure ? "tenureSelected" : ""
-              }`}
-              onClick={() => setTenure(t)}
-            >
-              {t}
-            </button>
-          );
-        })}
       </div>
     </div>
   );
