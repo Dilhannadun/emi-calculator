@@ -45,7 +45,7 @@ function App() {
     }
     const emi = calcEmi(downPayment);
     setEmi(emi);
-  }, [tenure]);
+  }, [tenure, cost]);
 
   const updateEMI = (e) => {
     if (!cost) return;
@@ -80,6 +80,7 @@ function App() {
         inputType="number"
         state={cost}
         setState={setCost}
+        min={0}
       />
 
       <TextInput
@@ -87,6 +88,8 @@ function App() {
         inputType="number"
         state={interest}
         setState={setInterest}
+        min={0}
+        max={100}
       />
 
       <TextInput
@@ -94,6 +97,8 @@ function App() {
         inputType="number"
         state={fee}
         setState={setFee}
+        min={0}
+        max={100}
       />
 
       <SliderInput
